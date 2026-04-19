@@ -134,13 +134,14 @@ foreach ($Plugin in $CurrentPluginsList) {
     try {
         # Step 5.7.1: Build the plugin
         if (Test-Path "Cargo.toml") {
+            $env:RESPEEK_PLUGIN_VERSION = $Meta.version
             cargo build --target wasm32-wasip1 --release
             Copy-Item "target/wasm32-wasip1/release/$($Meta.name).wasm" "$($Meta.name).wasm"
         }
         elseif (Test-Path "go.mod") {
             $env:GOOS = "wasip1"
             $env:GOARCH = "wasm"
-            go build -o "$($Meta.name).wasm" .
+            go build -ldflags "-X main.version=$($Meta.version)" -o "$($Meta.name).wasm" .
         }
         else {
             Write-LogMessage -Level "ERR" -Message "No supported build file found in $PluginDir"
