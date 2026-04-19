@@ -19,7 +19,7 @@ struct PluginSchema {
 
 #[plugin_fn]
 pub fn version(_: ()) -> FnResult<String> {
-    Ok(env!("CARGO_PKG_VERSION").to_string())
+    Ok(option_env!("RESPEEK_PLUGIN_VERSION").unwrap_or("dev").to_string())
 }
 
 #[plugin_fn]
