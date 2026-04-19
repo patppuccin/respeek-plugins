@@ -150,8 +150,16 @@ foreach ($Plugin in $CurrentPluginsList) {
 
         # Step 5.7.2: Push the plugin to GHCR
         if ($IsCI) {
-            oras push "${Image}:$($Meta.version)" "$($Meta.name).wasm:application/vnd.respeek.plugin.wasm"
-            oras push "${Image}:latest" "$($Meta.name).wasm:application/vnd.respeek.plugin.wasm"
+            $Annotations = @(
+                "--annotation", "org.opencontainers.image.title=$($Meta.name)",
+                "--annotation", "org.opencontainers.image.description=$($Meta.description)",
+                "--annotation", "org.opencontainers.image.version=$($Meta.version)",
+                "--annotation", "org.opencontainers.image.licenses=$($Meta.license)",
+                "--annotation", "org.opencontainers.image.vendor=$($Meta.author)",
+                "--annotation", "org.opencontainers.image.source=https://github.com/patppuccin/respeek-plugins"
+            )
+            oras push @Annotations "${Image}:$($Meta.version)" "$($Meta.name).wasm:application/vnd.respeek.plugin.wasm"
+            oras push @Annotations "${Image}:latest" "$($Meta.name).wasm:application/vnd.respeek.plugin.wasm"
             Write-LogMessage -Message "Released $($Meta.name)@$($Meta.version)"
         }
         else {
