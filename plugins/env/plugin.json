@@ -1,0 +1,8 @@
+{
+    "name": "env",
+    "description": "Query environment variables on the host system",
+    "version": "0.0.1",
+    "author": "patppuccin",
+    "license": "Apache-2.0",
+    "status": "active"
+}
