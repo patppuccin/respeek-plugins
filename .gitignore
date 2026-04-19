@@ -1,0 +1,11 @@
+# .gitignore for respeek plugins
+
+# WASM and executable artifacts
+**/*.wasm
+**/*.exe
+
+# Cargo artifacts and build output
+**/target/
+
+# Go artifacts and build output
+**/bin/
