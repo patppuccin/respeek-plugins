@@ -12,14 +12,31 @@ struct FunctionSchema {
 }
 
 #[derive(Serialize, Deserialize)]
+struct Capabilities {
+    env: bool,
+    network: bool,
+    sockets: bool,
+    filesystem: bool,
+    exec: bool,
+    system_info: bool,
+    clock: bool,
+}
+
+#[derive(Serialize, Deserialize)]
 struct PluginSchema {
     namespace: String,
+    version: String,
+    capabilities: Capabilities,
     functions: HashMap<String, FunctionSchema>,
+}
+
+fn plugin_version() -> &'static str {
+    option_env!("RESPEEK_PLUGIN_VERSION").unwrap_or("dev")
 }
 
 #[plugin_fn]
 pub fn version(_: ()) -> FnResult<String> {
-    Ok(option_env!("RESPEEK_PLUGIN_VERSION").unwrap_or("dev").to_string())
+    Ok(plugin_version().to_string())
 }
 
 #[plugin_fn]
@@ -46,6 +63,16 @@ pub fn schema(_: ()) -> FnResult<String> {
 
     let schema = PluginSchema {
         namespace: "env".to_string(),
+        version: plugin_version().to_string(),
+        capabilities: Capabilities {
+            env: true,
+            network: false,
+            sockets: false,
+            filesystem: false,
+            exec: false,
+            system_info: false,
+            clock: false,
+        },
         functions,
     };
 
